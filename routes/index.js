@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var sign = require('../model/sign');
+var moment = require('moment');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,13 +11,15 @@ router.get('/', function(req, res, next) {
 router.post('/hello', function(req, res, next) {
   const data = req.body
   if (data) {
-    const signData = new sign(data)
+    const creatTime = moment().format('YYYY-MM-DD HH:mm:ss')
+    data.creatTime = creatTime
     if (!data.phone) {
       res.json({
         success: false,
         message: "手机号不能为空"
       })
     } else {
+      const signData = new sign(data)
       sign.findOne({
         phone: data.phone
       }).then(user => {

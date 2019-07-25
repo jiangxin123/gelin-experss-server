@@ -15,7 +15,8 @@ const signSchema = mongoose.Schema({
     },
     address: String,
     course: Number,
-    message: String
+    message: String,
+    creatTime: Date
 })
 
 
