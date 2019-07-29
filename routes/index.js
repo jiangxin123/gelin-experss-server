@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 router.post('/hello', function(req, res, next) {
   const data = req.body
   if (data) {
-    const creatTime = moment().format('YYYY-MM-DD HH:mm:ss')
+    const creatTime = new Date()
     data.creatTime = creatTime
     if (!data.phone) {
       res.json({

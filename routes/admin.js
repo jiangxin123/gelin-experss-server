@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var sign = require('../model/sign');
+var moment = require('moment');
 
 
 router.post('/user/login', function(req, res, next) {
@@ -24,7 +25,7 @@ router.post('/user/login', function(req, res, next) {
   })
 });
 
-router.get('/user/info*', function(req, res, next) {
+router.get('/user/info', function(req, res, next) {
   const data = req.query
   // if (data) {
   //   sign.find((err, value) => {
@@ -51,13 +52,31 @@ router.get('/user/info*', function(req, res, next) {
 router.post('/sign/list', function(req, res, next) {
   const data = req.body
   if (data) {
-    var query = sign.find({})
+    console.log(data)
+    var query = sign.find({}).sort({ creatTime: 'desc'})
     query.exec((err, value) => {
-      if (value) {
+      if (!err) {
+        // value.forEach(item => {
+        //   if (item.creatTime) {
+        //     item.creatTime = moment(item.creatTime).format('YYYY-MM-DD HH:mm:ss')
+        //     // item.creatTime = moment(new Date(item.creatTime)).format('YYYY-MM-DD HH:mm:ss')
+        //     console.log(item.creatTime)
+        //     console.log(moment(new Date()).format('YYYY-MM-DD HH:mm:ss'))
+        //     console.log(moment(item.creatTime).format('YYYY-MM-DD HH:mm:ss'))
+        //   }
+        // })
+        var data = []
+        if (value && value.length) {
+          value.map(item => {
+            return Object.assign({}, item, {
+              creatTime: moment(item.creatTime).format('YYYY-MM-DD HH:mm:ss')
+            })
+          })
+        }
         res.json({
           success: true,
           message: "操作成功",
-          data: value
+          data
         })
       }
     })
