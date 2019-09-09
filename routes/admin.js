@@ -52,31 +52,24 @@ router.get('/user/info', function(req, res, next) {
 router.post('/sign/list', function(req, res, next) {
   const data = req.body
   if (data) {
-    console.log(data)
-    var query = sign.find({}).sort({ creatTime: 'desc'})
+    var query = sign.find({}).sort({ creatTime: 'desc'}).lean()
+
+    if(data.search) {
+      if (data.search.name) {
+        query.where({name: `/${data.search.name}/`})
+      }
+    }
     query.exec((err, value) => {
       if (!err) {
-        // value.forEach(item => {
-        //   if (item.creatTime) {
-        //     item.creatTime = moment(item.creatTime).format('YYYY-MM-DD HH:mm:ss')
-        //     // item.creatTime = moment(new Date(item.creatTime)).format('YYYY-MM-DD HH:mm:ss')
-        //     console.log(item.creatTime)
-        //     console.log(moment(new Date()).format('YYYY-MM-DD HH:mm:ss'))
-        //     console.log(moment(item.creatTime).format('YYYY-MM-DD HH:mm:ss'))
-        //   }
-        // })
-        var data = []
         if (value && value.length) {
-          value.map(item => {
-            return Object.assign({}, item, {
-              creatTime: moment(item.creatTime).format('YYYY-MM-DD HH:mm:ss')
-            })
+          value.forEach((item, i) => {
+            item.creatTime = moment(item.creatTime).format('YYYY-MM-DD HH:mm:ss')
           })
         }
         res.json({
           success: true,
           message: "操作成功",
-          data
+          data: value
         })
       }
     })
